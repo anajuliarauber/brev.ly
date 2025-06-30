@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, integer } from 'drizzle-orm/pg-core';
 import { uuidv7 } from 'uuidv7';
 
 export const links = pgTable('links', {
@@ -7,6 +7,6 @@ export const links = pgTable('links', {
     .$defaultFn(() => uuidv7()),
   originalUrl: text('remote_key').notNull(),
   shortUrl: text('short_url').notNull().unique(),
-  accessCount: text('access_count').default('0').notNull(),
+  accessCount: integer('access_count').default(0).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
