@@ -20,7 +20,6 @@ export const getLinksRoute: FastifyPluginAsyncZod = async server =>{
       },
     },
     async (request, reply) => {
-      console.log('get links route called');
       const result = await getLinks();
       if (isRight(result)) {
         return reply.status(200).send(unwrapEither(result));
