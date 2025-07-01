@@ -4,6 +4,7 @@ import { db } from "@/infra/db"
 import { schemas } from "@/infra/db/schemas"
 import { eq } from "drizzle-orm"
 import { ShortUrlAlreadyExists } from "./errors"
+import { Link } from "@/shared/types"
 
 const createLinksInput = z.object({
   originalUrl: z.string().url(),
@@ -12,15 +13,7 @@ const createLinksInput = z.object({
 
 type CreateLinksInput = z.input<typeof createLinksInput>
 
-type CreateLinksOutput = {
-  id: string
-  originalUrl: string
-  shortUrl: string
-  accessCount: number
-  createdAt: Date
-}
-
-export async function createLinks(input: CreateLinksInput): Promise<Either<ShortUrlAlreadyExists,CreateLinksOutput>> {
+export async function createLinks(input: CreateLinksInput): Promise<Either<ShortUrlAlreadyExists, Link>> {
   const {originalUrl, shortUrl} = createLinksInput.parse(input)
 
   const existingLink = await db.select().from(schemas.links)

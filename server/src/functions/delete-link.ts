@@ -4,6 +4,7 @@ import { Either, makeLeft, makeRight } from '@/shared/either';
 import { eq } from 'drizzle-orm';
 import z from 'zod';
 import { LinkNotFound } from './errors';
+import { Link } from '@/shared/types';
 
 const deleteLinkInput = z.object({
   id: z.string().uuid(),
@@ -11,17 +12,9 @@ const deleteLinkInput = z.object({
 
 type DeleteLinkInput = z.input<typeof deleteLinkInput>;
 
-type DeleteLinkOutput = {
-  id: string;
-  originalUrl: string;
-  shortUrl: string;
-  accessCount: number;
-  createdAt: Date;
-};
-
 export async function deleteLink(
   input: DeleteLinkInput
-): Promise<Either<LinkNotFound, DeleteLinkOutput>> {
+): Promise<Either<LinkNotFound, Link>> {
   const { id } = deleteLinkInput.parse(input);
 
   const existingLink = await db
