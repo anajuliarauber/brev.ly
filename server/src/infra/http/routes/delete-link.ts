@@ -15,7 +15,7 @@ export const deleteLinkRoute: FastifyPluginAsyncZod = async (server) => {
           200: z.object({
             id: z.string(),
             originalUrl: z.string().url(),
-            shortUrl: z.string().min(1).max(30),
+            shortUrl: z.string().url(),
             accessCount: z.number(),
             createdAt: z.date(),
           }),

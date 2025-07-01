@@ -7,7 +7,7 @@ import { ShortUrlAlreadyExists } from "./errors"
 
 const createLinksInput = z.object({
   originalUrl: z.string().url(),
-  shortUrl: z.string().min(1).max(30),
+  shortUrl: z.string().url(),
 })
 
 type CreateLinksInput = z.input<typeof createLinksInput>
