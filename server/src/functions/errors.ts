@@ -3,3 +3,9 @@ export class ShortUrlAlreadyExists extends Error {
     super('Short URL already exists');
   }
 }
+
+export class LinkNotFound extends Error {
+  constructor() {
+    super('Link not found');
+  }
+}
