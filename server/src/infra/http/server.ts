@@ -10,6 +10,7 @@ import { getLinksRoute } from './routes/get-links';
 import { deleteLinkRoute } from './routes/delete-link';
 import { incrementAccessCountRoute } from './routes/increment-access-count';
 import { exportLinksRoute } from './routes/export-links';
+import { redirectRoute } from './routes/redirect';
 
 const server = fastify();
 
@@ -39,6 +40,7 @@ server.register(getLinksRoute)
 server.register(deleteLinkRoute)
 server.register(incrementAccessCountRoute)
 server.register(exportLinksRoute)
+server.register(redirectRoute)
 
 server.listen({ port: 3333, host: '0.0.0.0' }).then(() => {
   console.log('Server running on http://localhost:3333!');
