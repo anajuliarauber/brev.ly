@@ -1,27 +1,28 @@
-import { PassThrough, Transform } from 'node:stream'
-import { pipeline } from 'node:stream/promises'
-import { db } from '@/infra/db'
-import { schemas } from '@/infra/db/schemas'
-import { uploadFileToStorage } from '@/infra/storage/upload-file-to-storage'
-import { type Either, makeRight } from '@/shared/either'
-import { stringify } from 'csv-stringify'
-import { ilike } from 'drizzle-orm'
-import { z } from 'zod'
-import postgres from 'postgres'
+import { PassThrough, Transform } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { db } from '@/infra/db';
+import { schemas } from '@/infra/db/schemas';
+import { uploadFileToStorage } from '@/infra/storage/upload-file-to-storage';
+import { type Either, makeRight } from '@/shared/either';
+import { stringify } from 'csv-stringify';
+import { ilike } from 'drizzle-orm';
+import { z } from 'zod';
+import postgres from 'postgres';
 
 type ExportLinksOutput = {
   reportUrl: string;
-}
+};
 
-export async function exportLinks(): Promise<Either<never,ExportLinksOutput>>{
-  const {sql, params} = db.select().from(schemas.links).toSQL()
-  console.log(sql, params)
+export async function exportLinks(): Promise<Either<never, ExportLinksOutput>> {
+  const { sql, params } = db.select().from(schemas.links).toSQL();
 
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
-    throw new Error("DATABASE_URL is not defined");
+    throw new Error('DATABASE_URL is not defined');
   }
-  const cursor = postgres(databaseUrl).unsafe(sql, params as string[]).cursor(2)
+  const cursor = postgres(databaseUrl)
+    .unsafe(sql, params as string[])
+    .cursor(2);
 
   const csv = stringify({
     delimiter: ',',
@@ -31,11 +32,11 @@ export async function exportLinks(): Promise<Either<never,ExportLinksOutput>>{
       { key: 'original_url', header: 'Original URL' },
       { key: 'short_url', header: 'Short URL' },
       { key: 'access_count', header: 'Access Count' },
-      { key: 'created_at', header: 'Created At' }
-    ]
-  })
+      { key: 'created_at', header: 'Created At' },
+    ],
+  });
 
-  const uploadToStorageStream = new PassThrough()
+  const uploadToStorageStream = new PassThrough();
 
   const convertToCSVPipeline = pipeline(
     cursor,
@@ -43,24 +44,24 @@ export async function exportLinks(): Promise<Either<never,ExportLinksOutput>>{
       objectMode: true,
       transform(chunks: unknown[], encoding, callback) {
         for (const chunk of chunks) {
-          this.push(chunk)
+          this.push(chunk);
         }
 
-        callback()
+        callback();
       },
     }),
     csv,
     uploadToStorageStream
-  )
+  );
 
   const uploadToStorage = uploadFileToStorage({
     contentType: 'text/csv',
     fileName: `links-report-${new Date().toISOString()}.csv`,
     folder: 'downloads',
-   contentStream: uploadToStorageStream
-  })
+    contentStream: uploadToStorageStream,
+  });
 
-   const [{ url }] = await Promise.all([uploadToStorage, convertToCSVPipeline])
+  const [{ url }] = await Promise.all([uploadToStorage, convertToCSVPipeline]);
 
-  return makeRight({ reportUrl: url })
+  return makeRight({ reportUrl: url });
 }
