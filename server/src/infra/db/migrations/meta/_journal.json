@@ -8,6 +8,13 @@
       "when": 1751234120986,
       "tag": "0000_rich_white_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751416971450,
+      "tag": "0001_sloppy_silhouette",
+      "breakpoints": true
     }
   ]
 }
