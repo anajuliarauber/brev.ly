@@ -11,9 +11,14 @@ const getOriginalUrlInput = z.object({
 
 type GetOriginalUrlInput = z.infer<typeof getOriginalUrlInput>;
 
+export type GetOriginalUrlOutput = {
+  originalUrl: string;
+  id: string;
+};
+
 export async function getOriginalUrl(
   input: GetOriginalUrlInput
-): Promise<Either<LinkNotFound, string>> {
+): Promise<Either<LinkNotFound, GetOriginalUrlOutput>> {
   const { shortUrl } = getOriginalUrlInput.parse(input);
 
   const completeShortUrl = `http://localhost:3333/${shortUrl}`;
@@ -29,5 +34,5 @@ export async function getOriginalUrl(
     return makeLeft(new LinkNotFound());
   }
 
-  return makeRight(existingLink[0].originalUrl);
+  return makeRight({originalUrl:existingLink[0].originalUrl, id: existingLink[0].id});
 }

@@ -1,4 +1,5 @@
 import { getOriginalUrl } from '@/functions/get-original-url';
+import { incrementAccessCount } from '@/functions/increment-access-count';
 import { isRight, unwrapEither } from '@/shared/either';
 import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
@@ -27,7 +28,8 @@ export const redirectRoute: FastifyPluginAsyncZod = async (server) => {
       const result = await getOriginalUrl({ shortUrl });
 
       if (isRight(result)) {
-        return reply.status(302).redirect(result.right);
+        await incrementAccessCount({ id: result.right.id });
+        return reply.status(302).redirect(result.right.originalUrl);
       }
 
       const error = unwrapEither(result);

@@ -8,7 +8,6 @@ import {
 } from 'fastify-type-provider-zod';
 import { getLinksRoute } from './routes/get-links';
 import { deleteLinkRoute } from './routes/delete-link';
-import { incrementAccessCountRoute } from './routes/increment-access-count';
 import { exportLinksRoute } from './routes/export-links';
 import { redirectRoute } from './routes/redirect';
 
@@ -38,7 +37,6 @@ server.register(fastifyCors, {
 server.register(createLinkRoute);
 server.register(getLinksRoute)
 server.register(deleteLinkRoute)
-server.register(incrementAccessCountRoute)
 server.register(exportLinksRoute)
 server.register(redirectRoute)
 
