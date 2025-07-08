@@ -21,7 +21,7 @@ export async function getOriginalUrl(
 ): Promise<Either<LinkNotFound, GetOriginalUrlOutput>> {
   const { shortUrl } = getOriginalUrlInput.parse(input);
 
-  const completeShortUrl = `http://localhost:3333/${shortUrl}`;
+  const completeShortUrl = `http://localhost:5173/${shortUrl}`;
 
   const existingLink = await db
     .select()
