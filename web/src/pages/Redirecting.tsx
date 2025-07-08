@@ -2,23 +2,22 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { LogoIcon } from '../components/icons/LogoIcon';
 import { PageStatus } from '../layouts/PageStatus';
 import { useEffect } from 'react';
-import type { AxiosError } from 'axios';
 import { useRedirect } from '../http/redirect';
 
 export const Redirecting = () => {
    const { shortUrl } = useParams<{ shortUrl: string }>();
   const navigate = useNavigate();
 
-  const { isSuccess, error } = useRedirect(shortUrl ?? '');
+  const { isSuccess, data, error } = useRedirect(shortUrl ?? '');
 
   useEffect(() => {
-    if (isSuccess && shortUrl) {
-      window.location.href = `http://localhost:3333/${shortUrl}`;
+    if (isSuccess && shortUrl && data?.status === 302) {
+      window.location.href = `${import.meta.env.VITE_API_URL}/${shortUrl}`;
     }
-  }, [isSuccess, shortUrl]);
+  }, [isSuccess, shortUrl, data]);
 
   useEffect(() => {
-    if (error && (error as AxiosError).response?.status === 404) {
+    if (error) {
       navigate('/*');
     }
   }, [error, navigate]);
@@ -34,7 +33,7 @@ export const Redirecting = () => {
             {' '}
             Não foi redirecionado?{' '}
             <a
-              href={`http://localhost:3333/${shortUrl ?? ''}`}
+              href={`${import.meta.env.VITE_API_URL}/${shortUrl ?? ''}`}
               className="text-blue-base underline"
             >
               Acesse aqui
