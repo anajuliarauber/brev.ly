@@ -52,7 +52,7 @@ export const Form = () => {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full py-3 mt-4 rounded-lg bg-blue-base text-white font-medium hover:bg-blue-dark transition cursor-pointer"
+        className="w-full py-3 mt-4 rounded-lg bg-blue-base text-white font-medium hover:bg-blue-dark transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Salvar link
       </button>
