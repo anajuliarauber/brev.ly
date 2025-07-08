@@ -32,6 +32,8 @@ server.setErrorHandler((error, request, reply) => {
 
 server.register(fastifyCors, {
   origin: '*',
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 });
 
 server.register(createLinkRoute);
