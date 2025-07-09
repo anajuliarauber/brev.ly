@@ -14,7 +14,7 @@ export const App: React.FC = () => (
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/:shortUrl" element={<Redirecting />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/not_found" element={<NotFound />} />
       </Routes>
         <Toaster/>
     </QueryClientProvider>

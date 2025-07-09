@@ -23,42 +23,41 @@ export const Link = ({ link }: LinkProps) => {
   };
 
   return (
-    <li
-      key={link.id}
-      className="flex justify-between items-center border-t border-gray-200 py-3.5"
-    >
-      <div className="flex-1">
+    <li key={link.id} className="flex justify-between items-center border-t border-gray-200 py-3.5">
+      <div className="flex flex-col">
         <a
           href={`${link.shortUrl}`}
           target="_blank"
-          className="text-blue-base font-medium overflow-hidden text-ellipsis whitespace-nowrap max-w-[160px] inline-block align-bottom"
+          className="text-blue-base font-medium overflow-hidden text-ellipsis whitespace-nowrap inline-block align-bottom max-w-[160px]"
           rel="noreferrer"
           title={`${link.shortUrl}`}
         >
           {formatLink(link.shortUrl)}
         </a>
         <p
-          className="text-gray-500 text-sm overflow-hidden text-ellipsis whitespace-nowrap max-w-[160px] inline-block align-bottom"
+          className="text-gray-500 text-sm overflow-hidden text-ellipsis whitespace-nowrap inline-block align-bottom max-w-[160px] lg:max-w-[350px]"
           title={link.originalUrl}
         >
           {link.originalUrl}
         </p>
       </div>
-      <div className="mx-2 text-sm text-gray-500">{link.accessCount} acessos</div>
-      <div className="flex space-x-1">
-        <button
-          className="cursor-pointer text-gray-600 p-2 bg-gray-200 rounded-sm"
-          onClick={() => handleCopy(link.shortUrl)}
-        >
-          <CopyIcon size={20} className="text-gray-600" />
-        </button>
-        <button
-          className="cursor-pointer text-gray-600 p-2 bg-gray-200 rounded-sm disabled:cursor-not-allowed"
-          onClick={() => handleDelete(link.id)}
-          disabled={isLoading}
-        >
-          <TrashIcon size={20} className="text-gray-600" />
-        </button>
+      <div className="flex items-center space-x-2">
+        <div className="text-sm text-gray-500">{link.accessCount} acessos</div>
+        <div className="flex space-x-1">
+          <button
+            className="cursor-pointer text-gray-600 p-2 bg-gray-200 rounded-sm"
+            onClick={() => handleCopy(link.shortUrl)}
+          >
+            <CopyIcon size={20} className="text-gray-600" />
+          </button>
+          <button
+            className="cursor-pointer text-gray-600 p-2 bg-gray-200 rounded-sm disabled:cursor-not-allowed"
+            onClick={() => handleDelete(link.id)}
+            disabled={isLoading}
+          >
+            <TrashIcon size={20} className="text-gray-600" />
+          </button>
+        </div>
       </div>
     </li>
   );

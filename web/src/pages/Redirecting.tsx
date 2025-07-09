@@ -24,7 +24,7 @@ export const Redirecting = () => {
 
   useEffect(() => {
     if (error) {
-      navigate('/*');
+      navigate('/not_found');
     }
   }, [error, navigate]);
 
