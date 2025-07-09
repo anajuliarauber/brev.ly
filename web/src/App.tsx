@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import { NotFound } from './pages/NotFound';
 import { Redirecting } from './pages/Redirecting';
+import { Toaster } from 'react-hot-toast';
 
 const queryClient = new QueryClient();
 
@@ -15,6 +16,7 @@ export const App: React.FC = () => (
         <Route path="/:shortUrl" element={<Redirecting />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+        <Toaster/>
     </QueryClientProvider>
   </BrowserRouter>
 );

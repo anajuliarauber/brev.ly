@@ -1,14 +1,16 @@
 import { useQuery, type UseQueryResult } from 'react-query';
 import { api } from './api';
-import type { AxiosError, AxiosResponse } from 'axios';
 
 export const REDIRECT_QUERY_KEY = 'redirect';
 
-export const redirect = async (shortUrl: string): Promise<AxiosResponse<void>> => {
-  return api.get(`/${shortUrl}`);
+export const redirect = async (shortUrl: string): Promise<string> => {
+  const response = await api.get<{ originalUrl: string }>(
+    `/links/resolve/${shortUrl}`,
+  );
+  return response.data.originalUrl;
 };
 
-export const useRedirect = (shortUrl: string): UseQueryResult<AxiosResponse<void>, AxiosError> =>
+export const useRedirect = (shortUrl: string): UseQueryResult<string, Error> =>
   useQuery({
     queryKey: [REDIRECT_QUERY_KEY, shortUrl],
     queryFn: () => redirect(shortUrl),

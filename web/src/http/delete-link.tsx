@@ -4,6 +4,7 @@ import type { AxiosError, AxiosResponse } from 'axios';
 import type { Link } from '../shared/types';
 import { api } from './api';
 import { LINKS_QUERY_KEY } from './get-links';
+import toast from 'react-hot-toast';
 
 const deleteLinkInput = z.object({
   id: z.string().uuid(),
@@ -26,8 +27,15 @@ export function useDeleteLink(): UseMutationResult<Link, AxiosError, DeleteLinkI
       queryClient.invalidateQueries(LINKS_QUERY_KEY);
     },
     onError: (error) => {
-      console.error('[useCreateLink] Error creando link:', error);
-      // TODO show toast
+      if (error.response?.status === 404) {
+        toast.error('Link não encontrado', {
+          position: 'top-right',
+        });
+      } else if (error.response?.status === 500) {
+        toast.error('Erro ao deletar o link', {
+          position: 'top-right',
+        });
+      }
     },
   });
 }

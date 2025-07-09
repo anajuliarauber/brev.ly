@@ -2,13 +2,14 @@ import { CopyIcon, TrashIcon } from '@phosphor-icons/react';
 import type { Link as LinkInterface } from '../shared/types';
 import { useDeleteLink } from '../http/delete-link';
 import { copyUrl } from '../utils/copy-url';
-
+import toast from 'react-hot-toast';
+import { formatLink } from '../utils/format-link';
 interface LinkProps {
   link: LinkInterface;
 }
 
 export const Link = ({ link }: LinkProps) => {
-  const { mutate} = useDeleteLink();
+  const { mutate, isLoading } = useDeleteLink();
 
   const handleDelete = (id: string) => {
     mutate({ id });
@@ -16,13 +17,15 @@ export const Link = ({ link }: LinkProps) => {
 
   const handleCopy = (shortUrl: string) => {
     copyUrl(shortUrl);
-    // TODO: show toast
+    toast.success('Link copiado com sucesso!', {
+      position: 'top-right',
+    });
   };
 
   return (
     <li
       key={link.id}
-      className="flex justify-between items-center border border-gray-200 rounded-lg p-4"
+      className="flex justify-between items-center border-t border-gray-200 py-3.5"
     >
       <div className="flex-1">
         <a
@@ -32,19 +35,29 @@ export const Link = ({ link }: LinkProps) => {
           rel="noreferrer"
           title={`${link.shortUrl}`}
         >
-          {link.shortUrl}
+          {formatLink(link.shortUrl)}
         </a>
-        <p className="text-gray-400 text-sm overflow-hidden text-ellipsis whitespace-nowrap max-w-[160px] inline-block align-bottom" title={link.originalUrl}>
+        <p
+          className="text-gray-500 text-sm overflow-hidden text-ellipsis whitespace-nowrap max-w-[160px] inline-block align-bottom"
+          title={link.originalUrl}
+        >
           {link.originalUrl}
         </p>
       </div>
-      <div className="mx-4 text-sm text-gray-500">{link.accessCount} acessos</div>
-      <div className="flex space-x-2">
-        <button className="cursor-pointer" onClick={() => handleCopy(link.shortUrl)}>
-          <CopyIcon size={20} />
+      <div className="mx-2 text-sm text-gray-500">{link.accessCount} acessos</div>
+      <div className="flex space-x-1">
+        <button
+          className="cursor-pointer text-gray-600 p-2 bg-gray-200 rounded-sm"
+          onClick={() => handleCopy(link.shortUrl)}
+        >
+          <CopyIcon size={20} className="text-gray-600" />
         </button>
-        <button className="cursor-pointer" onClick={() => handleDelete(link.id)}>
-          <TrashIcon size={20} className="text-danger" />
+        <button
+          className="cursor-pointer text-gray-600 p-2 bg-gray-200 rounded-sm disabled:cursor-not-allowed"
+          onClick={() => handleDelete(link.id)}
+          disabled={isLoading}
+        >
+          <TrashIcon size={20} className="text-gray-600" />
         </button>
       </div>
     </li>

@@ -4,10 +4,11 @@ import type { AxiosError, AxiosResponse } from 'axios';
 import type { Link } from '../shared/types';
 import { api } from './api';
 import { LINKS_QUERY_KEY } from './get-links';
+import toast from 'react-hot-toast';
 
 export const createLinkInput = z.object({
-  originalUrl: z.string().url(),
-  shortUrl: z.string().min(1),
+  originalUrl: z.string().url({message: "Informe uma url válida"}),
+  shortUrl: z.string().min(1, { message: 'Deve conter pelo menos 1 caractere' }),
 });
 
 export type CreateLinkInput = z.infer<typeof createLinkInput>;
@@ -32,8 +33,10 @@ export function useCreateLink(): UseMutationResult<Link, AxiosError, CreateLinkI
       queryClient.invalidateQueries([LINKS_QUERY_KEY]);
     },
     onError: (error) => {
-      console.error('[useCreateLink] Error creando link:', error);
-      // TODO show toast
-    },
+      if (error.response?.status === 409) {
+       toast.error('Esse link encurtado já existe', {
+        position: 'top-right',
+       });
+    }   }  
   });
 }

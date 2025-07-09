@@ -2,23 +2,28 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { LogoIcon } from '../components/icons/LogoIcon';
 import { PageStatus } from '../layouts/PageStatus';
 import { useEffect } from 'react';
-import type { AxiosError } from 'axios';
 import { useRedirect } from '../http/redirect';
 
 export const Redirecting = () => {
    const { shortUrl } = useParams<{ shortUrl: string }>();
   const navigate = useNavigate();
 
-  const { isSuccess, error } = useRedirect(shortUrl ?? '');
+  const { isSuccess,data,  error } = useRedirect(shortUrl ?? '');
 
-  useEffect(() => {
-    if (isSuccess && shortUrl) {
-      window.location.href = `http://localhost:3333/${shortUrl}`;
+ useEffect(() => {
+    if (isSuccess && data) {
+      window.location.href = data;
     }
-  }, [isSuccess, shortUrl]);
+  }, [isSuccess, data]);
 
   useEffect(() => {
-    if (error && (error as AxiosError).response?.status === 404) {
+    if (error) {
+      navigate('/*');
+    }
+  }, [error, navigate]);
+
+  useEffect(() => {
+    if (error) {
       navigate('/*');
     }
   }, [error, navigate]);
@@ -33,10 +38,7 @@ export const Redirecting = () => {
           <p className="text-center">
             {' '}
             Não foi redirecionado?{' '}
-            <a
-              href={`http://localhost:3333/${shortUrl ?? ''}`}
-              className="text-blue-base underline"
-            >
+            <a href={data ?? ''} className="text-blue-base underline">
               Acesse aqui
             </a>
           </p>
