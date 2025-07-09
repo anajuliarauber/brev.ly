@@ -1,0 +1,32 @@
+services:
+  db:
+    image: bitnami/postgresql:latest
+    container_name: db
+    ports:
+      - $DATABASE_PORT:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 110220
+      POSTGRES_DB: postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  # app:
+  #   build: .
+  #   container_name: brevly-app
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - $PORT:3333
+  #   environment:
+  #     - NODE_ENV=development
+  #     - DATABASE_URL=postgres://postgres:brev.ly@db:5432/postgres
+
+  #   volumes:
+  #     - './brevly-app:/app/brevly-app'
+
+
+
+volumes:
+  db:
+    driver: local
