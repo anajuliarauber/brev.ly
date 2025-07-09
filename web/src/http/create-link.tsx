@@ -7,15 +7,17 @@ import { LINKS_QUERY_KEY } from './get-links';
 import toast from 'react-hot-toast';
 
 export const createLinkInput = z.object({
-  originalUrl: z.string().url({message: "Informe uma url válida"}),
-  shortUrl: z.string().min(1, { message: 'Deve conter pelo menos 1 caractere' }),
+  originalUrl: z.string().url({ message: "Informe uma url válida" }),
+  shortUrl: z
+    .string()
+    .min(1, { message: 'Deve conter pelo menos 1 caractere' })
+    .regex(/^[a-zA-Z0-9_-]+$/, { message: 'Não são permitidos caracteres especiais' }),
 });
 
 export type CreateLinkInput = z.infer<typeof createLinkInput>;
 
 export const createLink = async (input: CreateLinkInput): Promise<Link> => {
   const { originalUrl, shortUrl } = createLinkInput.parse(input);
-  console.log('Creating link:', { originalUrl, shortUrl });
 
   const response: AxiosResponse<Link> = await api.post('/links', {
     originalUrl,
