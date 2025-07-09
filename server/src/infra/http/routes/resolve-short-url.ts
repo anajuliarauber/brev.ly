@@ -4,21 +4,17 @@ import { isRight, unwrapEither } from '@/shared/either';
 import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 
-export const redirectRoute: FastifyPluginAsyncZod = async (server) => {
+export const resolveShortUrlRoute: FastifyPluginAsyncZod = async (server) => {
   server.get(
-    '/:shortUrl',
+    '/links/resolve/:shortUrl',
     {
       schema: {
         params: z.object({
           shortUrl: z.string().min(1, 'Short URL must not be empty'),
         }),
         response: {
-          302: z.object({
-            message: z.string().optional(),
-          }),
-          404: z.object({
-            message: z.string(),
-          }),
+          200: z.object({ originalUrl: z.string().url() }),
+          404: z.object({ message: z.string() }),
         },
       },
     },
@@ -28,8 +24,9 @@ export const redirectRoute: FastifyPluginAsyncZod = async (server) => {
       const result = await getOriginalUrl({ shortUrl });
 
       if (isRight(result)) {
-        await incrementAccessCount({ id: result.right.id });
-        return reply.status(302).redirect(result.right.originalUrl);
+         await incrementAccessCount({ id: result.right.id });
+        const { originalUrl } = result.right;
+        return reply.status(200).send({ originalUrl });
       }
 
       const error = unwrapEither(result);
